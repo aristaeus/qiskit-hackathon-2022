@@ -29,9 +29,14 @@ BigPicture[0,8]=2
 #BigPicture=HackathonFuncs.FiniteIterationClass(BigPicture,Max)
 #print(BigPicture)
 
-BigPicture=HackathonFuncs.UntilStopQuantum(BigPicture)
-#Max=10
-#BigPicture=HackathonFuncs.FiniteIterationQuantum(BigPicture,Max)
+sky=1
+stem=0.7
+fork=0.9
+flower=0.7
+
+#BigPicture=HackathonFuncs.UntilStopQuantum(BigPicture,sky,stem,fork,flower)
+Max=10
+BigPicture=HackathonFuncs.FiniteIterationQuantum(BigPicture,Max,sky,stem,fork,flower)
 print(BigPicture)
 
 test=visualise(BigPicture)

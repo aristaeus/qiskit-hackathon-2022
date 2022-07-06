@@ -269,7 +269,7 @@ def calculate_junction(sky_weight, flower_weight, stem_weight, junction_weight):
     counts = result.get_counts()
     result = list(counts.keys())[0]
     if result[0:2] != '00' or result[2:] == '0000':
-        return calculate_junction()
+        return calculate_junction(sky_weight, flower_weight, stem_weight, junction_weight)
     # result = result[2:]
     # reverse result?
     result = result[-1:1:-1]
@@ -277,6 +277,7 @@ def calculate_junction(sky_weight, flower_weight, stem_weight, junction_weight):
 
 ###Ben wrote code above####
 
+###Blayney wrote code below###
 
 def stemQC(stem,fork,flower):
     """
@@ -328,7 +329,9 @@ def stemQC(stem,fork,flower):
     else:
         stemQC(stem,fork,flower)
 
-def NonJunctionEvolutionQuantum(BigPicture,N):
+###Blayney wrote code above###
+
+def NonJunctionEvolutionQuantum(BigPicture,stem,fork,flower):
     """
     This takes in the state of the system at some iteration number N and gives the
     state of the system at N+1 but does not do the junction evolution
@@ -346,9 +349,6 @@ def NonJunctionEvolutionQuantum(BigPicture,N):
         Junction operatations have already been performed to
         partially determine the N+1 state
 
-    N: an int less than PictureHeight
-        refers to the Nth iteraction of the system
-
     Outputs:
     -------------------
     NewPicture: a PictureHeight x PictureWidth array of ints
@@ -363,36 +363,36 @@ def NonJunctionEvolutionQuantum(BigPicture,N):
 
     for counter in range(PictureWidth):
         #if the state of the N+1 cell has not already been decided then do this code
-        if BigPicture[N+1,counter] ==-1:
+        if BigPicture[1,counter] ==-1:
             #if a cell is sky then the state above it is sky
-            if BigPicture[N,counter]==0:
-                NewPicture[N+1,counter]=0
+            if BigPicture[0,counter]==0:
+                NewPicture[1,counter]=0
             #if a cell is a flower then the state above it is sky
-            if BigPicture[N,counter]==1:
-                NewPicture[N+1,counter]=0
+            if BigPicture[0,counter]==1:
+                NewPicture[1,counter]=0
             #if a cell is a stem then it could be a flower, a stem or a junction
-            if BigPicture[N,counter]==2:
+            if BigPicture[0,counter]==2:
                 #replace this with Grover's later to make it quantum
                 #and also implement bias
                 x=random.randint(1,3)
-                NewPicture[N+1,counter]=x
-            if BigPicture[N,counter]==3:
-                NewPicture[N+1,counter]=0
+                NewPicture[1,counter]=x
+            if BigPicture[0,counter]==3:
+                NewPicture[1,counter]=0
 
         #this is to avoid the situation where, due to a junction, the cell above a
         #stem is inappropriately set to be sky
-        if NewPicture[N+1,counter] == 0 and NewPicture[N,counter] == 2:
+        if NewPicture[1,counter] == 0 and NewPicture[0,counter] == 2:
             #replace this with Grover's later to make it quantum
             #and also implement bias
 
             #BLAYNEY'S QUANTUM CODE GOES HERE REPLACING RANDINT
-            x=stemQC(0.7,0.9,0.7)
-            NewPicture[N+1,counter]=x
+            x=stemQC(stem,fork,flower)
+            NewPicture[1,counter]=x
 
 
     return NewPicture
 
-def FiniteIterationQuantum(Seed, MAX):
+def FiniteIterationQuantum(Seed,MAX,sky,stem,fork,flower):
     """
     This grows the plant for MAX number of steps. The plant might grow beyond
     that in which case this function will plot a bunch of empty sky
@@ -440,20 +440,20 @@ def FiniteIterationQuantum(Seed, MAX):
 
 
 
-        #Holding=Ben's Junction Code
+        #Ben's Junction Code
         for i in range(PictureWidth):
             if Holding[0,i]==3:
-                left,right=calculate_junction(1,1,1,1)
+                left,right=calculate_junction(sky,flower,stem,fork)
                 Holding[1,(i-1)%PictureWidth]=left
                 Holding[1,(i+1)%PictureWidth]=right
 
-        Holding=NonJunctionEvolutionQuantum(Holding,0)
+        Holding=NonJunctionEvolutionQuantum(Holding,stem,fork,flower)
 
         Output=np.vstack([Output,Holding[1,:]])
 
     return Output
 
-def UntilStopQuantum(Seed):
+def UntilStopQuantum(Seed,sky,stem,fork,flower):
     """
     This grows the plant until it naturally stops. If the plant grows forever
     then this function will never stop
@@ -508,11 +508,12 @@ def UntilStopQuantum(Seed):
         #Ben's junction evolution code
         for i in range(PictureWidth):
             if Holding[0,i]==3:
-                left,right=calculate_junction(1,1,1,1)
+                #left,right=calculate_junction(sky,flower,stem,fork)
+                left,right=calculate_junction(sky, flower, stem, fork)
                 Holding[1,(i-1)%PictureWidth]=left
                 Holding[1,(i+1)%PictureWidth]=right
 
-        Holding=NonJunctionEvolutionQuantum(Holding,0)
+        Holding=NonJunctionEvolutionQuantum(Holding,stem,fork,flower)
 
         Output=np.vstack([Output,Holding[1,:]])
 
