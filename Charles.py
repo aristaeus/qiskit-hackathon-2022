@@ -40,14 +40,14 @@ def draw_stem(img, x, y):
     img.putpixel((x+1,y+2), green)
 
 def draw_junction_left(img, x, y):
-    img.putpixel((x-1, (y+0) % img.width), green)
-    img.putpixel((x+0, (y+1) % img.width), green)
-    img.putpixel((x+1, (y+2) % img.width), green)
+    img.putpixel(((x-1) % img.width, y+0), green)
+    img.putpixel(((x+0) % img.width, y+1), green)
+    img.putpixel(((x+1) % img.width, y+2), green)
 
 def draw_junction_right(img, x, y):
-    img.putpixel((x+3, (y+0) % img.width), green)
-    img.putpixel((x+2, (y+1) % img.width), green)
-    img.putpixel((x+1, (y+2) % img.width), green)
+    img.putpixel(((x+3) % img.width, y+0), green)
+    img.putpixel(((x+2) % img.width, y+1), green)
+    img.putpixel(((x+1) % img.width, y+2), green)
     
 
 drawers = {SKY: draw_sky, FLOWER: draw_flower, STEM: draw_stem}
