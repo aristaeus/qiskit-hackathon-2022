@@ -40,14 +40,14 @@ def draw_stem(img, x, y):
     img.putpixel((x+1,y+2), green)
 
 def draw_junction_left(img, x, y):
-    img.putpixel((x-1,y+0), green)
-    img.putpixel((x+0,y+1), green)
-    img.putpixel((x+1,y+2), green)
+    img.putpixel((x-1, (y+0) % img.width), green)
+    img.putpixel((x+0, (y+1) % img.width), green)
+    img.putpixel((x+1, (y+2) % img.width), green)
 
 def draw_junction_right(img, x, y):
-    img.putpixel((x+3,y+0), green)
-    img.putpixel((x+2,y+1), green)
-    img.putpixel((x+1,y+2), green)
+    img.putpixel((x+3, (y+0) % img.width), green)
+    img.putpixel((x+2, (y+1) % img.width), green)
+    img.putpixel((x+1, (y+2) % img.width), green)
     
 
 drawers = {SKY: draw_sky, FLOWER: draw_flower, STEM: draw_stem}
@@ -79,9 +79,9 @@ def visualise(inv_mat):
         for y in range(height):
             if y > 0 and mat[y][x] == JUNCTION:
                 left = right = False
-                if x > 0 and mat[y-1][x-1] >= FLOWER:
+                if mat[y-1][(x-1) % width] >= FLOWER:
                     draw_junction_left(img, x*BLOCK_SIZE, y*BLOCK_SIZE)
-                if x < width - 1 and mat[y-1][x+1] >= FLOWER:
+                if mat[y-1][(x+1) % width] >= FLOWER:
                     draw_junction_right(img, x*BLOCK_SIZE, y*BLOCK_SIZE)
     # draw dirt
     img.paste(brown, (0, height*BLOCK_SIZE, img.width, img.height))
@@ -94,7 +94,7 @@ def visualise(inv_mat):
     return scaled
 
 
-# In[4]:
+# In[ ]:
 
 
 if __name__ == '__main__':
