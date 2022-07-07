@@ -1,11 +1,12 @@
 import numpy as np
 import random
-from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit, Aer, assemble
+from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit, Aer, assemble, IBMQ, transpile
 from numpy import pi
-from qiskit.circuit.library import ZGate
 
 import itertools
 import math
+
+IBMQ.load_account()
 
 def NonJunctionEvolutionClass(BigPicture, N):
     """
@@ -311,11 +312,13 @@ def stemQC(stem,fork,flower):
     qc.h([0,1,2])
     #measurement
     qc.measure([0,1,2],[0,1,2])
-    #Run sim
-    sim = Aer.get_backend('aer_simulator')
+    # #Run sim
+    # sim = Aer.get_backend('aer_simulator')
+    # Run Physically
+    sim = IBMQ.get_provider(hub='ibm-q-education', group='ibm-4', project='qiskit-hackathon').get_backend('ibm_perth')
     qc_sim = qc.copy()
     qc_sim.measure_all()
-    qobj = assemble(qc_sim)
+    qobj = transpile(qc_sim, sim)
     result = sim.run(qobj, shots=1).result()
     counts = result.get_counts(experiment=None)
     a = max(counts)
